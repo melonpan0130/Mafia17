@@ -21,10 +21,9 @@
             });
 
             socket.on('chat message', function(msg){
-            $('#messages').append($('<li>').text(msg));
+                $('#messages').append($('<li>').text(msg));
+                $('#msg').scrollTop($('#msg').prop('scrollHeight'));
             });
-
-            $('#msg').scrollTop($('#messages').height() - $('#msg').height());
         });
     </script>
     <style>
@@ -91,7 +90,7 @@
         padding: 0;
         text-align: center; 
     }
-    
+
     .face {
         width: 100px;
         height: 100px;
@@ -107,7 +106,7 @@
     </style>
     </head>
     <body>
-        <nav>hello</nav>
+        <nav>Mafia17</nav>
         <div class="content">
             <div>
                 <ul id="history"></ul>
@@ -172,35 +171,42 @@
                         <div class="face">
                             <img src="img/job/spy.png">
                         </div>
-                        <p>Mafia</p>
+                        <p>SPY</p>
                         <p>userName</p>
                     </div>
                     <div class="people">
                         <div class="face">
                             <img src="img/job/doctor.png">
                         </div>
-                        <p>Mafia</p>
+                        <p>Doctor</p>
                         <p>userName</p>
                     </div>
                     <div class="people">
                         <div class="face">
                             <img src="img/job/police.png">
                         </div>
-                        <p>Mafia</p>
+                        <p>Police</p>
                         <p>userName</p>
                     </div>
                     <div class="people">
                         <div class="face">
                             <img src="img/job/ghost.png">
                         </div>
-                        <p>Mafia</p>
+                        <p>Ghost</p>
+                        <p>userName</p>
+                    </div>
+                    <div class="people">
+                        <div class="face">
+                            <img src="img/job/politician.png">
+                        </div>
+                        <p>Politician</p>
                         <p>userName</p>
                     </div>
                     <div class="people">
                         <div class="face">
                             <img src="img/job/citizen.png">
                         </div>
-                        <p>Mafia</p>
+                        <p>Citizen</p>
                         <p>userName</p>
                     </div>
                 </div>
