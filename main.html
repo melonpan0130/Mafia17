@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <title>Document</title>
+        <script src="/socket.io/socket.io.js"></script>
+    <script
+  src="https://code.jquery.com/jquery-3.4.1.js"
+  integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
+  crossorigin="anonymous"></script>
+    <script>
+        $(function() {
+            var socket = io();
+            $('form').submit(function(e) {
+                e.preventDefault();
+                socket.emit('chat message', $('#m').val());
+                $('#m').val('');
+                return false;
+            });
+
+            socket.on('chat message', function(msg){
+            $('#messages').append($('<li>').text(msg));
+            });
+
+            $('#msg').scrollTop($('#messages').height() - $('#msg').height());
+        });
+    </script>
+    <style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        border: solid 1px black;
+    }
+    body {
+        height: 100vh;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+    }
+    .content {
+        display: flex;
+        flex: 1;
+    }
+    .content>div {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        flex-grow: 1;
+    }
+
+    .content>div:nth-child(2n+1) { width: 30%; }
+    .content>div:nth-child(2) { width: 40%; }
+
+    nav {
+        background: coral;
+        padding: 10px;
+        font-size: 32px;
+    }
+
+    #status {
+        height: 60px;
+    }
+
+    #msg {
+        flex: 1;
+        overflow: auto;
+    }
+
+    #messages {
+        flex-grow: 1;
+    }
+
+    #chatting {
+        height: 60px;
+        margin-top: auto;
+    }
+
+    #guess>div {
+        height: 50%;
+        overflow: auto;
+        display: flex;
+        flex-flow: row wrap;
+        justify-content: space-around;
+    }
+
+    .people {
+        margin: 10px;
+        padding: 0;
+        text-align: center; 
+    }
+    
+    .face {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        background-color: brown;
+    }
+
+    .face>img {
+        width: 80px;
+        height: 80px;
+        margin: 10px;
+    }
+    </style>
+    </head>
+    <body>
+        <nav>hello</nav>
+        <div class="content">
+            <div>
+                <ul id="history"></ul>
+            </div>
+            <div>
+                <div id="status">This is Night</div>
+                <div id="msg">
+                    <ul id="messages"></ul>
+                </div>
+                <div id="chatting">
+                    <form action="">
+                        <input id="m" autocomplete="off" type="text">
+                        <button>send</button>
+                    </form>
+                </div>
+            </div>
+
+            <div id="guess">
+                <div>
+                    <div class="people">
+                        <div class="face"></div>
+                        <p>Mafia</p>
+                        <p>userName</p>
+                    </div>
+                    <div class="people">
+                        <div class="face"></div>
+                        <p>Mafia</p>
+                        <p>userName</p>
+                    </div>
+                    <div class="people">
+                        <div class="face"></div>
+                        <p>Mafia</p>
+                        <p>userName</p>
+                    </div>
+                    <div class="people">
+                        <div class="face"></div>
+                        <p>Mafia</p>
+                        <p>userName</p>
+                    </div>
+                    <div class="people">
+                        <div class="face"></div>
+                        <p>Mafia</p>
+                        <p>userName</p>
+                    </div>
+                    <div class="people">
+                        <div class="face"></div>
+                        <p>Mafia</p>
+                        <p>userName</p>
+                    </div>
+                </div>
+
+                <!-- explain the job -->
+                <div>
+                    <div class="people">
+                        <div class="face">
+                            <img src="img/job/mafia.png">
+                        </div>
+                        <p>Mafia</p>
+                        <p>userName</p>
+                    </div>
+                    <div class="people">
+                        <div class="face">
+                            <img src="img/job/spy.png">
+                        </div>
+                        <p>Mafia</p>
+                        <p>userName</p>
+                    </div>
+                    <div class="people">
+                        <div class="face">
+                            <img src="img/job/doctor.png">
+                        </div>
+                        <p>Mafia</p>
+                        <p>userName</p>
+                    </div>
+                    <div class="people">
+                        <div class="face">
+                            <img src="img/job/police.png">
+                        </div>
+                        <p>Mafia</p>
+                        <p>userName</p>
+                    </div>
+                    <div class="people">
+                        <div class="face">
+                            <img src="img/job/ghost.png">
+                        </div>
+                        <p>Mafia</p>
+                        <p>userName</p>
+                    </div>
+                    <div class="people">
+                        <div class="face">
+                            <img src="img/job/citizen.png">
+                        </div>
+                        <p>Mafia</p>
+                        <p>userName</p>
+                    </div>
+                </div>
+            </div>
+            <div>
+
+            </div>
+        </div>
+    </body>
+</html>
