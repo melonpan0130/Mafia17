@@ -3,6 +3,7 @@
   <head>
     <title>Socket.IO chat</title>
     <style>
+      /*
       * { margin: 0; padding: 0; box-sizing: border-box; }
       body { font: 13px Helvetica, Arial; }
       form { background: #000; padding: 3px; position: fixed; bottom: 0; width: 100%; }
@@ -11,6 +12,7 @@
       #messages { list-style-type: none; margin: 0; padding: 0; }
       #messages li { padding: 5px 10px; }
       #messages li:nth-child(odd) { background: #eee; }
+      */
     </style>
     <script src="/socket.io/socket.io.js"></script>
     <script
@@ -30,13 +32,92 @@
             socket.on('chat message', function(msg){
             $('#messages').append($('<li>').text(msg));
             });
+
+            $('#msg').scrollTop($('#messages').height() - $('#msg').height());
         });
     </script>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        border: solid 1px black;
+      }
+      body {
+        height: 100vh;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+      }
+      .content {
+        display: flex;
+        flex: 1;
+      }
+      .content>div {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        flex-grow: 1;
+      }
+
+      nav {
+        background: coral;
+        padding: 10px;
+        font-size: 32px;
+      }
+
+      #status {
+        height: 60px;
+        flex: none;
+      }
+
+      #msg {
+        flex: 1;
+        overflow: auto;
+      }
+
+      #messages {
+        flex-grow: 1;
+      }
+
+      #chatting {
+        height: 60px;
+         margin-top: auto;
+         flex: none;
+      }
+
+      .who {
+        width: 100px;
+        height: 100px;
+      }
+    </style>
   </head>
   <body>
-    <ul id="messages"></ul>
-    <form action="">
-      <input id="m" autocomplete="off" /><button>Send</button>
-    </form>
+        <nav>hello</nav>
+        <div class="content">
+            <div>
+              <ul id="history"></ul>
+            </div>
+
+            <div>
+              <div id="status">밤이 됨</div>
+              <div id="msg">
+                <ul id="messages"></ul>
+              </div>
+              <div id="chatting">
+                  <form action="">
+                      <input id="m" autocomplete="off" type="text">
+                      <button>send</button>
+                    </form>
+              </div>
+            </div>
+
+            <div>
+              <div id="guess">
+                <div class="who"></div>
+              </div>
+              <div></div>
+            </div>
+        </div>
   </body>
 </html>
