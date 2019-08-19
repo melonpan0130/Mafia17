@@ -11,12 +11,23 @@
   integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
   crossorigin="anonymous"></script>
     <script>
+        function getParameterByName(name) {
+            name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+            var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+                results = regex.exec(location.search);
+            return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+        }
+
         $(function() {
             var socket = io();
+            var room = getParameterByName('room');
+
             $('form').submit(function(e) {
                 e.preventDefault();
-                socket.emit('chat message', $('#m').val());
-                $('#m').val('');
+                socket.emit('chat message', {
+                    msg : $('#m').val()
+                });
+                $('#m').val();
                 return false;
             });
 
@@ -41,6 +52,7 @@
     }
     .content {
         display: flex;
+        height: 100%;
         flex: 1;
     }
     .content>div {
