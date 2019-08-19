@@ -1,49 +1,49 @@
-var app = require('express')();
-var http = require('http').createServer(app);
-var io = require('socket.io')(http);
+const app = require('express')();
+const http = require('http').Server(app);
+const io = require('socket.io')(http);
 
-// app.set('view engine', 'ejs');
+
+// app.set('view engine', 'html');
 // app.set('views', './views');
 
-let roomNum = 0;
+var rooms = [];
 
-app.get('/', function(req, res){
-    res.sendFile(__dirname + '/main.html');
+app.get('/', (req, res) => {
+  // res.render('main');
+  res.sendFile(__dirname+'/main.html');
 });
 
-app.post('/main', function(req, res) {
-    // res.sendfile(__dirname + '/main.html');
+io.on('connection', (socket) => {
+  socket.on('disconnect', () => {
+    console.log('user disconnected');
+  });
+
+  socket.on('leaveRoom', (Roomcode, name) => {
+    socket.leave(Roomcode, () => {
+      console.log(name + ' leave a ' + Roomcode);
+      io.to(Roomcode).emit('leaveRoom', Roomcode, name);
+    });
+  });
+
+
+  socket.on('joinRoom', (Roomcode, name) => {
+    socket.join(Roomcode, () => {
+      console.log(name + ' join a ' + Roomcode);
+      if(!rooms.find(c => c===Roomcode))
+        rooms.push(Roomcode);
+      console.log(rooms);
+      io.to(Roomcode).emit('joinRoom', Roomcode, name);
+    });
+  });
+
+
+  socket.on('chat message', (Roomcode, name, msg) => {
+    // insert msg to db
+    io.to(Roomcode).emit('chat message', name, msg);
+  });
 });
 
-io.on('connection', function(socket){
-    console.log('a user connected');
-    socket.on('disconnect', function(){
-        console.log('user disconnected');
-    });
-    // socket.broadcast.emit('hi');
 
-    socket.on('leaveRoom', (num, name)=> {
-        socket.leave(num, ()=> {
-            console.log(name + ' leave a room ' + num);
-            io.to(num).emit('leaveRoom', num, name);
-        });
-    });
-    
-    socket.on('joinRoom', (num, name)=> {
-        socket.join(num, () => {
-            console.log(name + ' join a room ' + num);
-            io.to(num).emit('joinRoom', num, name);
-        });
-    });
-
-    socket.on('chat message', (num, name, msg) => {
-        roomNum = num;
-        io.to(roomNum).emit('chat message', name, msg);
-    });
+http.listen(3000, () => {
+  console.log('Connect at 3000');
 });
-
-http.listen(3000, function(){
-    console.log('success');
-});
-
-io.emit('some event', { for: 'everyone' });
