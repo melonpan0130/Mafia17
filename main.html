@@ -4,36 +4,49 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta http-equiv="X-UA-Compatible" content="ie=edge">
-        <title>Document</title>
         <script src="/socket.io/socket.io.js"></script>
     <script
   src="https://code.jquery.com/jquery-3.4.1.js"
   integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
   crossorigin="anonymous"></script>
     <script>
+        /*
         function getParameterByName(name) {
             name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
             var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
                 results = regex.exec(location.search);
             return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
         }
-
+        */
+        
         $(function() {
-            var socket = io();
-            var room = getParameterByName('room');
+            const name = prompt('What your name?');
+            const socket = io();
+            let roomNum = prompt('Write room number');
+
+            socket.emit('joinRoom', num, name);
 
             $('form').submit(function(e) {
                 e.preventDefault();
-                socket.emit('chat message', {
-                    msg : $('#m').val()
-                });
-                $('#m').val();
+                socket.emit('chat message', roomNum, name, $('#m').val());
+                console.log('write : '+$('#m').val());
+                $('#m').val('');
                 return false;
             });
 
-            socket.on('chat message', function(msg){
+            socket.on('chat message', (name, msg) => {
                 $('#messages').append($('<li>').text(msg));
                 $('#msg').scrollTop($('#msg').prop('scrollHeight'));
+            });
+
+            socket.on('leaveRoom', (num, name) => {
+                $('#messages').append($('<li>').text(name+' leaved :('));
+                console.log('leave room');
+            });
+
+            socket.on('joinRoom', (num, name) => {
+                $('#messages').append($('<li>').text(name+' joined :)'));
+                console.log('join room')
             });
         });
     </script>
