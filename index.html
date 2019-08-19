@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <script src="/socket.io/socket.io.js"></script>
+    <script
+  src="https://code.jquery.com/jquery-3.4.1.js"
+  integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
+  crossorigin="anonymous"></script>
+    </head>
+    <body>
+        <form method="post">
+            <label for="name">Name : </label>
+            <input type="text" name="name" id="name"><br>
+            <label for="room">Room : </label>
+            <input type="text" name="room" id="room"><br>
+            <input type="submit" id="enter" value="Enter">
+        </form>
+    </body>
+    <script>
+        $(function() {
+            var socket = io();
+
+            $('#enter').click(function() {
+                var name = document.getElementById('name');
+                var room = document.getElementById('room');
+
+                socket.emit('join', {
+                    'name' : name.value,
+                    'room' : room.value
+                });
+
+                // move page
+            })
+
+            // new member is joined
+            socket.on('join', function(data) {
+                alert(data);
+            })
+        })
+    </script>
+</html>
