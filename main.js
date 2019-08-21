@@ -33,6 +33,7 @@ app.post('/enterProc', (req, res) => {
 });
 
 app.get('/gameChat', (req, res) => {
+  console.log(e_name+', '+ e_room);
   res.render('main', {
     name : e_name,
     Roomcode : e_room

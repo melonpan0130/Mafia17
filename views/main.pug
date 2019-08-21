@@ -26,9 +26,10 @@ html
                             p Mafia
                             p userName
                 div
-                    - for(var a=0; a<5; a++)
+                    - var jobs = ['mafia.png', 'police.png', 'doctor.png', 'citizen.png', 'ghost.png', 'spy.png', 'politician.png']
+                    for img in jobs
                         .people
-                            .face: img(src="/img/job/doctor.png")
+                            .face: img(src="/img/job/"+img)
                             p Mafia
                             p userName
             div
