@@ -1,6 +1,7 @@
-const app = require('express')();
-const http = require('http').Server(app);
-const io = require('socket.io')(http);
+var app = require('express')();
+var http = require('http').Server(app);
+var io = require('socket.io')(http);
+var fs = require('fs');
 var bodyParser = require('body-parser');
 
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -9,7 +10,7 @@ app.set('view engine', 'pug');
 app.set('views', './views');
 
 var rooms = [];
-var name, room;
+var e_name, e_room;
 
 app.get('/', (req, res) => {
   // res.render('main');
@@ -17,16 +18,25 @@ app.get('/', (req, res) => {
   res.render('enter');
 });
 
+// upload images
+app.get('/img/job/:filename', (req, res) => {
+  fs.readFile('img/job/'+req.params.filename, (error, data) => {
+    res.writeHead(200, { 'Content-Type': 'image/png'});
+    res.end(data);
+  })
+})
+
 app.post('/enterProc', (req, res) => {
-  res.render('main', {
-    name : req.body.name,
-    Roomcode : req.body.room
-  });
-  // res.redirect('/gameChat');
+  e_name = req.body.name;
+  e_room = req.body.room;
+  res.redirect('/gameChat');
 });
 
 app.get('/gameChat', (req, res) => {
-
+  res.render('main', {
+    name : e_name,
+    Roomcode : e_room
+  });
 });
 
 io.on('connection', (socket) => {

@@ -3,40 +3,13 @@ html
         script(src="/socket.io/socket.io.js")
         script(src="https://code.jquery.com/jquery-3.4.1.js" integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
   crossorigin="anonymous")
-        script.
-            $(() => {
-                console.log('connected');
-                // const name = prompt('What your name');
-                // const Roomcode = prompt('Write room code or create new room code');
-                const socket = io();
-
-                socket.emit('joinRoom', Roomcode, name);
-
-                $('form').submit(() => {
-                socket.emit('chat message', Roomcode, name, $('#m').val());
-                $('#m').val('');
-                return false;
-                });
-
-                socket.on('chat message', (name, msg) => {
-                $('#messages').append($('<li>').text(name + '  :  ' +
-                    msg));
-                });
-
-                socket.on('leaveRoom', (Roomcode, name) => {
-                $('#messages').append($('<li>').text(name + '    leaved '
-                    + Roomcode + ' :('));
-                });
-
-                socket.on('joinRoom', (Roomcode, name) => {
-                $('#messages').append($('<li>').text(name + '    joined '
-                    +Roomcode + ':)'));
-                });
-            });
-        link(rel="stylesheet", href="/css/gameChat.css")
+        script
+            include ../js/gameChat.js
+        style
+            include ../css/gameChat.css
     body
         nav Mafia17
-        div(class="content")
+        .content
             div: ul(id="history")
             div
                 #status This is Night.
@@ -45,13 +18,19 @@ html
                     form(action="")
                         input(type="text" id="m" autocomplete="off")
                         button send
-        
-        #guess
+            #guess
+                div
+                    - for(var a=0; a<6; a++)
+                        .people
+                            .face
+                            p Mafia
+                            p userName
+                div
+                    - for(var a=0; a<5; a++)
+                        .people
+                            .face: img(src="/img/job/doctor.png")
+                            p Mafia
+                            p userName
             div
-                - for(var a=0; a<5; a++)
-                .people
-                    .face
-                    p Mafia
-                    p userName
 
             

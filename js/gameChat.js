@@ -1,7 +1,7 @@
 $(() => {
     console.log('connected');
-    // const name = prompt('What your name');
-    // const Roomcode = prompt('Write room code or create new room code');
+    const name = prompt('What your name');
+    const Roomcode = prompt('Write room code or create new room code');
     const socket = io();
 
     socket.emit('joinRoom', Roomcode, name);
