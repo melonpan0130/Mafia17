@@ -15,7 +15,7 @@ var e_name, e_room;
 app.get('/', (req, res) => {
   // res.render('main');
   // res.sendFile(__dirname+'/views/index.html');
-  res.render('enter');
+  res.render('main');
 });
 
 // upload images
@@ -25,7 +25,7 @@ app.get('/img/job/:filename', (req, res) => {
     res.end(data);
   })
 })
-
+/*
 app.post('/enterProc', (req, res) => {
   e_name = req.body.name;
   e_room = req.body.room;
@@ -33,12 +33,12 @@ app.post('/enterProc', (req, res) => {
 });
 
 app.get('/gameChat', (req, res) => {
-  console.log(e_name+', '+ e_room);
   res.render('main', {
     name : e_name,
     Roomcode : e_room
   });
 });
+*/
 
 io.on('connection', (socket) => {
   socket.on('disconnect', () => {

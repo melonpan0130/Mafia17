@@ -3,16 +3,74 @@ html
         script(src="/socket.io/socket.io.js")
         script(src="https://code.jquery.com/jquery-3.4.1.js" integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
   crossorigin="anonymous")
-        script
+        //- script
             include ../js/gameChat.js
         style
             include ../css/gameChat.css
+        script.
+            function validation() {
+                var name = document.getElementById('name');
+                var room = document.getElementById('room');
+
+                if(name.value == ''){
+                    alert('Please Write on your name.');
+                    name.focus();
+                }
+                else if(room.value == ''){
+                    alert('Please Write on your room code.');
+                    room.focus();
+                }
+                else
+                    enter();
+            }
+            
+            function enter(){
+                var name = document.getElementById('name').value;
+                var Roomcode = document.getElementById('room').value;
+
+                $("#popup").addClass("hidden");
+
+                var socket = io();
+
+                socket.emit('joinRoom', Roomcode, name);
+
+                $('form').submit( () => {
+                    socket.emit('chat message', Roomcode, name, $('#m').val());
+                    $('#m').val('');
+                    return false;
+                });
+
+                socket.on('chat message', (name, msg) => {
+                    $('#messages').append($('<li>').text(name + '  :  ' +
+                    msg));
+                });
+
+                socket.on('leaveRoom', (Roomcode, name) => {
+                    $('#messages').append($('<li>').text(name + '    leaved '
+                    + Roomcode + ' :('));
+                });
+
+                socket.on('joinRoom', (Roomcode, name) => {
+                    $('#messages').append($('<li>').text(name + '    joined '
+                    +Roomcode + ':)'));
+                });
+            };
     body
+        #popup
+            table
+                tr
+                    td: label(for="name") Name
+                    td: input(type="text" name="name" placeholder="Name" value="dd" id="name")
+                tr
+                    td: label(for="room") Room
+                    td: input(type="text" name="room" placeholder="Room Code" value="dd" id="room")
+                tr
+                    td(colspan="2"): input(type="submit" id="enter" value="Enter" onclick="validation()")
         nav Mafia17
         .content
             div: ul(id="history")
             div
-                #status This is Night.
+                #status This is Night.(the message)
                 #msg: ul(id="messages")
                 #chatting
                     form(action="")
@@ -33,5 +91,3 @@ html
                             p Mafia
                             p userName
             div
-
-            
