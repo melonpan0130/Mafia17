@@ -4,17 +4,34 @@ var io = require('socket.io')(http);
 var fs = require('fs');
 var bodyParser = require('body-parser');
 
+var mysql      = require('mysql');
+var db = mysql.createConnection({
+  host     : 'localhost',
+  user     : 'root',
+  password : '1234',
+  database : 'mafia17'
+});
+
+db.connect();
+
+
+
 app.use(bodyParser.urlencoded({ extended: false }));
 
 app.set('view engine', 'pug');
 app.set('views', './views');
 
 var rooms = [];
-var e_name, e_room;
 
 app.get('/', (req, res) => {
-  // res.render('main');
-  // res.sendFile(__dirname+'/views/index.html');
+  /*
+  db.query('SELECT * from test', function(err, rows, fields) {
+    if (!err)
+      console.log('The solution is: ', rows);
+    else
+      console.log('Error while performing Query.', err);
+  });
+  */
   res.render('main');
 });
 
@@ -25,23 +42,12 @@ app.get('/img/job/:filename', (req, res) => {
     res.end(data);
   })
 })
-/*
-app.post('/enterProc', (req, res) => {
-  e_name = req.body.name;
-  e_room = req.body.room;
-  res.redirect('/gameChat');
-});
-
-app.get('/gameChat', (req, res) => {
-  res.render('main', {
-    name : e_name,
-    Roomcode : e_room
-  });
-});
-*/
 
 io.on('connection', (socket) => {
+  console.log('connection');
+
   socket.on('disconnect', () => {
+    // db.end();
     console.log('user disconnected');
   });
 
@@ -51,7 +57,6 @@ io.on('connection', (socket) => {
       io.to(Roomcode).emit('leaveRoom', Roomcode, name);
     });
   });
-
 
   socket.on('joinRoom', (Roomcode, name) => {
     socket.join(Roomcode, () => {
@@ -66,6 +71,14 @@ io.on('connection', (socket) => {
 
   socket.on('chat message', (Roomcode, name, msg) => {
     // insert msg to db
+    db.query('insert into test(room, uname, msg) values(?, ?, ?)' // add time
+    ,[Roomcode, name, msg]
+    , function(err, rows, fields) {
+      if (!err)
+        console.log(rows);
+      else
+        console.log('Error while performing Query.', err);
+    });
     io.to(Roomcode).emit('chat message', name, msg);
   });
 });
