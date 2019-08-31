@@ -52,6 +52,9 @@ nav {
 #guess>div {
     height: 50%;
     overflow: auto;
+}
+
+.gameGuess {
     display: flex;
     flex-flow: row wrap;
     justify-content: space-around;

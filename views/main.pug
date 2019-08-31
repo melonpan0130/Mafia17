@@ -8,6 +8,9 @@ html
         style
             include ../css/gameChat.css
         script.
+            var socket = io();
+            var name, Roomcode;
+
             function validation() {
                 var name = document.getElementById('name');
                 var room = document.getElementById('room');
@@ -25,12 +28,10 @@ html
             }
             
             function enter(){
-                var name = document.getElementById('name').value;
-                var Roomcode = document.getElementById('room').value;
+                name = document.getElementById('name').value;
+                Roomcode = document.getElementById('room').value;
 
                 $("#popup").addClass("hidden");
-
-                var socket = io();
 
                 socket.emit('joinRoom', Roomcode, name);
 
@@ -45,16 +46,28 @@ html
                     msg));
                 });
 
-                socket.on('leaveRoom', (Roomcode, name) => {
-                    $('#messages').append($('<li>').text(name + '    leaved '
-                    + Roomcode + ' :('));
-                });
+                
 
-                socket.on('joinRoom', (Roomcode, name) => {
-                    $('#messages').append($('<li>').text(name + '    joined '
-                    +Roomcode + ':)'));
+                socket.on('joined', (Roomcode, name, players) => {
+                    $('#messages').append($('<li>').text(name + '    joined '+Roomcode + ':)'));
+
+                    for(var i=0; i<players.length; i++)
+                        $('#guess>div:first-child').append(
+                            $('<div class="people">').append('<div class="face">').append('<p>'+players[i].name+'</p>')
+                        );
                 });
             };
+
+            function gameStart() {
+                alert('Game start!');
+                $('#guess>div:last-child>div').addClass('gameGuess').toggleClass('hidden');
+            }
+
+            function exit() {
+                alert('exit');
+                socket.emit('leave', Roomcode, name);
+                window.location.reload();
+            }
     body
         #popup
             table
@@ -77,17 +90,21 @@ html
                         input(type="text" id="m" autocomplete="off")
                         button send
             #guess
-                div
-                    - for(var a=0; a<6; a++)
+                .gameGuess
+                    //- for(var a=0; a<6; a++)
                         .people
                             .face
                             p Mafia
                             p userName
                 div
-                    - var jobs = ['mafia.png', 'police.png', 'doctor.png', 'citizen.png', 'ghost.png', 'spy.png', 'politician.png']
-                    for img in jobs
-                        .people
-                            .face: img(src="/img/job/"+img)
-                            p Mafia
-                            p userName
+                    div
+                        button(onclick="gameStart()") Start
+                        button(onclick="exit()") Exit
+                    .hidden
+                        - var jobs = ['mafia.png', 'police.png', 'doctor.png', 'citizen.png', 'ghost.png', 'spy.png', 'politician.png']
+                        for img in jobs
+                            .people
+                                .face: img(src="/img/job/"+img)
+                                p Mafia
+                                p userName
             div
