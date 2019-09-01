@@ -79,18 +79,6 @@ io.on('connection', (socket) => {
           io.to(Roomcode).emit('joined', Roomcode, name, players);
         });
 
-        // RoomCode가 새로운 방인가?
-        /*
-        var isNewRoom = rooms.filter((room)=>{return room.room == Roomcode});
-        console.log(isNewRoom);
-        if(!isNewRoom)
-          rooms.push({ room : Roomcode, member : [name]});
-        else
-          isNewRoom.member.push(name);
-        console.log(rooms);
-        */
-
-
         // save cookie for reload.
         // console.log(messages[0]);
         // console.log(messages[0].room);
