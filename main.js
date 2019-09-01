@@ -50,7 +50,6 @@ io.on('connection', (socket) => {
   socket.on('disconnect', () => {
     // db.end();
     console.log('user disconnected');
-
   });
 
   socket.on('leave', (Roomcode, name) => {
@@ -100,7 +99,16 @@ io.on('connection', (socket) => {
     });
     io.to(Roomcode).emit('chat message', name, msg);
   });
-});
+
+  socket.on('starting', (Roomcode)=> {
+    io.to(Roomcode).emit('gamestart');
+  });
+
+  socket.on('timer', (Roomcode)=> {
+    io.to(Roomcode).emit('timer', time);
+  });
+  
+}); // connection
 
 http.listen(3000, () => {
   console.log('Connect at 3000');

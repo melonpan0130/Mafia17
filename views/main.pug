@@ -10,6 +10,9 @@ html
         script.
             var socket = io();
             var name, Roomcode;
+            var startTime;
+            var jobs = ['mafia', 'doctor', 'police'];
+            var status = ['밤이 되었습니다.', '아침이 밝았습니다.', '투표 시간입니다.', '최후의 반론'];
 
             function validation() {
                 var name = document.getElementById('name');
@@ -46,28 +49,56 @@ html
                     msg));
                 });
 
-                
-
                 socket.on('joined', (Roomcode, name, players) => {
                     $('#messages').append($('<li>').text(name + '    joined '+Roomcode + ':)'));
+                    $('#guess>div:first-child').empty();
 
                     for(var i=0; i<players.length; i++)
                         $('#guess>div:first-child').append(
                             $('<div class="people">').append('<div class="face">').append('<p>'+players[i].name+'</p>')
                         );
                 });
+
+                socket.on('gamestart', ()=> {
+                    startTime = Date();
+                    var time = 30;
+                    setInterval(()=> {
+                        $('#status').text(status[0]+' ('+time+')');
+                        time--;
+                    }, 1000);
+                    $('#guess>div:last-child>div').addClass('gameGuess').toggleClass('hidden');
+                    $('#status').text('밤이 되었습니다. (30)');
+                    $('#messages').empty();
+                    alert('Game start!');
+                });
+
+                socket.on('timer', (time)=> {
+                    
+                });
             };
 
             function gameStart() {
-                alert('Game start!');
-                $('#guess>div:last-child>div').addClass('gameGuess').toggleClass('hidden');
+                if($('.gameGuess>div').length < 3)
+                    alert('3명 이상이어야 합니다.');
+                else {
+                    socket.emit('starting', Roomcode);
+                }
             }
 
             function exit() {
-                alert('exit');
+                var exit = confirm('Are you sure to exit?');
+                if(exit){
+                    alert('Exited');
+                    socket.emit('leave', Roomcode, name);
+                    window.location.reload();
+                }
+            }
+
+            $(window).bind("beforeunload", function() {
                 socket.emit('leave', Roomcode, name);
                 window.location.reload();
-            }
+                return ;
+            })
     body
         #popup
             table
@@ -83,7 +114,7 @@ html
         .content
             div: ul(id="history")
             div
-                #status This is Night.(the message)
+                #status 마피아 게임
                 #msg: ul(id="messages")
                 #chatting
                     form(action="")
