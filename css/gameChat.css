@@ -2,7 +2,6 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    border: solid 1px black;
 }
 body {
     height: 100vh;
@@ -15,6 +14,7 @@ body {
     height: 100%;
     flex: 1;
 }
+
 .content>div {
     height: 100%;
     display: flex;
@@ -23,12 +23,18 @@ body {
 }
 
 .content>div:nth-child(2n+1) { width: 30%; }
-.content>div:nth-child(2) { width: 40%; }
+.content>div:nth-child(2) { 
+    width: 40%; 
+    border-left : solid 2px rgb(59, 59, 59);
+    border-right : solid 2px rgb(59, 59, 59);
+}
 
 nav {
-    background: coral;
+    background: #BF1736;
     padding: 10px;
     font-size: 32px;
+    font-family: 'Anton', sans-serif;
+    color: white;
 }
 
 #status {
@@ -38,6 +44,25 @@ nav {
 #msg {
     flex: 1;
     overflow: auto;
+    background-color: #eee;
+}
+
+#msg li { 
+    background-color: #0E2773;
+    color: white;
+    padding: 10px;
+    border-radius: 10px;
+    margin: 10px;
+}
+
+#msg li.notice {
+    background-color: rgba(0, 0, 0, 0);
+    text-align: center;
+    color: #0D1440;
+}
+
+#msg li.me {
+    background-color: #BF1736;
 }
 
 #messages {
@@ -47,11 +72,16 @@ nav {
 #chatting {
     height: 60px;
     margin-top: auto;
+    color: 
 }
 
 #guess>div {
     height: 50%;
     overflow: auto;
+}
+
+#guess>div:first-child {
+    border-top: solid 2px rgb(59, 59, 59);
 }
 
 .gameGuess {
@@ -81,13 +111,54 @@ nav {
 
 #popup {
     position: fixed;
-    background: #fff;
+    background: #0D1440;
     width: 100%;
     height: 100%;
+    display: table;
 }
 
 #popup>table {
-    margin: 200px;
+    display: table-cell;
+    vertical-align: middle;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+#popup>table h1 {
+    font-family: 'Hepta Slab', serif;
+    font-size: 35px;
+    color: white;
+}
+
+#popup>table label {
+    color: #BF1736;
+    font-size: 30px;
+    display: inline-block;
+    font-family: 'Hepta Slab', serif;
+    font-weight: bolder;
+    padding: 20px;
+}
+
+#popup>table input {
+    font-family: 'Song Myung', serif;
+    font-size: 20px;
+    background-color: #0D1440;
+    border: none;
+    border-bottom: solid 2px #1438A6;
+    color: white;
+}
+
+#popup>table input[type="submit"] {
+    font-size: 30px;
+    margin: 30px;
+    border: none;
+    transition: border 0.25s;
+}
+
+#popup>table input[type="submit"]:hover {
+    border-bottom: solid 2px #1438A6;
 }
 
 .hidden {

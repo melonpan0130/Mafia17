@@ -3,6 +3,7 @@ html
         script(src="/socket.io/socket.io.js")
         script(src="https://code.jquery.com/jquery-3.4.1.js" integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
   crossorigin="anonymous")
+        link(rel="stylesheet", href="https://fonts.googleapis.com/css?family=Anton&display=swap")
         //- script
             include ../js/gameChat.js
         style
@@ -11,8 +12,17 @@ html
             var socket = io();
             var name, Roomcode;
             var startTime;
-            var jobs = ['mafia', 'doctor', 'police'];
-            var status = ['밤이 되었습니다.', '아침이 밝았습니다.', '투표 시간입니다.', '최후의 반론'];
+            var jobs = ['mafia', 'doctor', 'police', 'citizen', 'ghost', 'politician', 'spy'];
+            var statusMsg = ['밤이 되었습니다.', '아침이 밝았습니다.', '투표 시간입니다.', '최후의 반론'];
+            // var statusTime = [30, 120, 20, 10];
+            var statusTime = [5, 5, 5, 5];
+            var status = 0;
+            var playerJobs = new Array;
+            var playerNames;
+
+            // team
+            var mafia = 1;
+            var citizen = 2;
 
             function validation() {
                 var name = document.getElementById('name');
@@ -34,54 +44,130 @@ html
                 name = document.getElementById('name').value;
                 Roomcode = document.getElementById('room').value;
 
-                $("#popup").addClass("hidden");
+                // $("#popup").addClass("hidden");
+                $("#popup").css('display', 'none');
+                alert('hidden');
+
 
                 socket.emit('joinRoom', Roomcode, name);
 
-                $('form').submit( () => {
+                $('.normal').submit( () => {
                     socket.emit('chat message', Roomcode, name, $('#m').val());
                     $('#m').val('');
                     return false;
                 });
 
                 socket.on('chat message', (name, msg) => {
-                    $('#messages').append($('<li>').text(name + '  :  ' +
-                    msg));
+                    if(this.name == name)
+                        $('#messages').append($('<li>').text(msg).addClass('me'));
+                    else $('#messages').append($('<li>').text(name + '  :  ' +msg));
                 });
 
                 socket.on('joined', (Roomcode, name, players) => {
-                    $('#messages').append($('<li>').text(name + '    joined '+Roomcode + ':)'));
+                    $('#messages').append($('<li>').text(name + ' joined '+Roomcode + ':)').addClass('notice'));
+
                     $('#guess>div:first-child').empty();
+                    playerJobs.push();
 
                     for(var i=0; i<players.length; i++)
-                        $('#guess>div:first-child').append(
-                            $('<div class="people">').append('<div class="face">').append('<p>'+players[i].name+'</p>')
-                        );
+                        $('#guess>div:first-child').append($('<div class="people">').append('<div class="face">').append('<p>'+players[i].name+'</p>'));
                 });
 
-                socket.on('gamestart', ()=> {
+                socket.on('gamestart', (players)=> {
                     startTime = Date();
-                    var time = 30;
-                    setInterval(()=> {
-                        $('#status').text(status[0]+' ('+time+')');
-                        time--;
-                    }, 1000);
+
+                    playerNames = players;
+                    
+                    for(var i=0; i<players.length; i++)
+                        alert(playerNames[i].name);
+
                     $('#guess>div:last-child>div').addClass('gameGuess').toggleClass('hidden');
-                    $('#status').text('밤이 되었습니다. (30)');
                     $('#messages').empty();
+                    $('#messages').append($('<li>').text(statusMsg[status]).addClass('notice'));
+                    MixedJobs();
+                    $('#messages').append($('<li>').text('당신의 직업은 ' ).addClass('notice'));
+                    timer();
                     alert('Game start!');
                 });
 
-                socket.on('timer', (time)=> {
+                function timer() {
+                    time = statusTime[status];
+                    setInterval(()=> {
+                        if(time < 0) {
+                            status = (Number(status)+1)%4;
+                            time = statusTime[status];
+                            $('#messages').append($('<li>').text(statusMsg[status]).addClass('notice'));
+
+                            if(status == 0) {
+                                $('form').submit(() => {
+                                    socket.emit('chat at night', Roomcode, name, $('#m').val());
+                                    $('#m').val('');
+                                });
+                                // night();
+                            }
+                            else if(status == 1) morning();
+                            else if(status == 2) vote();
+                            else if(status == 3) will();
+                        }
+                        
+                        $('#status').text(statusMsg[status]+' ('+time+')');
+                        time--;
+                    }, 1000);
+                }
+
+                function night() {
+                    // 같은 직업끼리 대화 가능
+                    $('#chatting>form').removeClass('willChat');
+                    $('#chatting>form').addClass('nightChat');
+                    $('.nightChat').submit( () => {
+                        socket.emit('chat at night', Roomcode, name, $('#m').val());
+                        $('#m').val('');
+                    });
+
+                    socket.on('chat at night', (name, msg) => {
+                        $('#messages').append($('<li>').text(name + '(night) :  ' +
+                        msg));
+                    });
+                }
+
+                function morning() {
+                    // 모두와 대화 가능
+                    $('#chatting>form').removeClass('nightChat');
+                    $('#chatting>form').addClass('normal');
                     
-                });
+                }
+
+                function vote() {
+                    // 모두와 대화 가능
+                    // 투표
+                }
+
+                function will() {
+                    // 지목 당한 사람만 대화 가능
+                    $('#chatting>form').removeClass('normal');
+                    $('#chatting>form').addClass('willChat');
+                }
             };
 
             function gameStart() {
-                if($('.gameGuess>div').length < 3)
-                    alert('3명 이상이어야 합니다.');
+                if($('.gameGuess>div').length < 2)
+                    alert('4명 이상이어야 합니다.');
                 else {
                     socket.emit('starting', Roomcode);
+                }
+            }
+
+            function MixedJobs() {
+                var people;// = $('#guess>.gameGuess:first-child>div').length;
+                people = playerNames;
+                for(var i=0; i<people; i++){
+                    playerJobs[i] = i;
+                }
+                var temp;
+                for(var i=0; i<10; i++) {
+                    temp = playerJobs[0];
+                    playerJobs[0] = playerJobs[Math.random()%people];
+                    playerJobs[Math.random()%people] = temp;
                 }
             }
 
@@ -97,11 +183,13 @@ html
             $(window).bind("beforeunload", function() {
                 socket.emit('leave', Roomcode, name);
                 window.location.reload();
-                return ;
+                // return ;
             })
     body
         #popup
             table
+                tr
+                    td: h1 Mafia
                 tr
                     td: label(for="name") Name
                     td: input(type="text" name="name" placeholder="Name" value="dd" id="name")
@@ -117,7 +205,7 @@ html
                 #status 마피아 게임
                 #msg: ul(id="messages")
                 #chatting
-                    form(action="")
+                    form(action="" class="normal")
                         input(type="text" id="m" autocomplete="off")
                         button send
             #guess

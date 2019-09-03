@@ -69,22 +69,13 @@ io.on('connection', (socket) => {
       db.query('INSERT INTO player VALUES( ?, ? )'
       , [Roomcode, name]
       , ()=> {
-        db.query('SELECT * FROM player WHERE roomcode = ?'
-        , [Roomcode]
+        db.query('SELECT * FROM player WHERE roomcode = "'+Roomcode+'"'
         , function(err, players) {
           console.log(name + ' join a ' + Roomcode);
-          console.log(players);
+          console.log(players.rows);
 
           io.to(Roomcode).emit('joined', Roomcode, name, players);
         });
-
-        // save cookie for reload.
-        // console.log(messages[0]);
-        // console.log(messages[0].room);
-        // console.log(messages[0].uname);
-
-        // console.log(chatting.uname+' : '+chatting.msg);
-        
       });
     });
   });
@@ -96,18 +87,32 @@ io.on('connection', (socket) => {
     ,[Roomcode, name, msg]
     , function(err, rows, fields) {
       // do something
+      console.log('hello');
     });
     io.to(Roomcode).emit('chat message', name, msg);
   });
 
   socket.on('starting', (Roomcode)=> {
-    io.to(Roomcode).emit('gamestart');
+    db.query('SELECT name FROM player WHERE roomcode = ?'
+    ,[Roomcode]
+    , function(err, players) {
+      io.to(Roomcode).emit('gamestart', players);
+    });
   });
 
-  socket.on('timer', (Roomcode)=> {
-    io.to(Roomcode).emit('timer', time);
+  // socket.on('chat at night', (Roomcode, job, name, msg)=> {
+  //   io.to(Roomcode).emit('')
+  // })
+
+  socket.on('chat at night', (Roomcode, name, msg)=> {
+    console.log('night');
+    io.emit(Roomcode).emit('chat at night', name, msg);
   });
-  
+
+  socket.on('chat at will', (Roomcode, name, msg)=> {
+
+  })
+
 }); // connection
 
 http.listen(3000, () => {
