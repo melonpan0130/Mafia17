@@ -87,7 +87,7 @@ io.on('connection', (socket) => {
     ,[Roomcode, name, msg]
     , function(err, rows, fields) {
       // do something
-      console.log('hello');
+      console.log(rows);
     });
     io.to(Roomcode).emit('chat message', name, msg);
   });

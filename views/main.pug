@@ -3,19 +3,21 @@ html
         script(src="/socket.io/socket.io.js")
         script(src="https://code.jquery.com/jquery-3.4.1.js" integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
   crossorigin="anonymous")
-        link(rel="stylesheet", href="https://fonts.googleapis.com/css?family=Anton&display=swap")
+        script(src="https://cdnjs.cloudflare.com/ajax/libs/gsap/2.1.3/TweenMax.min.js")
+        link(rel="stylesheet", href="https://fonts.googleapis.com/css?family=Racing+Sans+One|Song+Myung&display=swap&subset=korean,latin-ext")
         //- script
             include ../js/gameChat.js
         style
             include ../css/gameChat.css
+            include ../css/popup.css
         script.
             var socket = io();
             var name, Roomcode;
             var startTime;
             var jobs = ['mafia', 'doctor', 'police', 'citizen', 'ghost', 'politician', 'spy'];
             var statusMsg = ['밤이 되었습니다.', '아침이 밝았습니다.', '투표 시간입니다.', '최후의 반론'];
-            // var statusTime = [30, 120, 20, 10];
-            var statusTime = [5, 5, 5, 5];
+            var statusTime = [30, 120, 20, 10];
+            // var statusTime = [5, 5, 5, 5];
             var status = 0;
             var playerJobs = new Array;
             var playerNames;
@@ -189,7 +191,7 @@ html
         #popup
             table
                 tr
-                    td: h1 Mafia
+                    td: h1(class="title") Mafia
                 tr
                     td: label(for="name") Name
                     td: input(type="text" name="name" placeholder="Name" value="dd" id="name")
@@ -197,7 +199,7 @@ html
                     td: label(for="room") Room
                     td: input(type="text" name="room" placeholder="Room Code" value="dd" id="room")
                 tr
-                    td(colspan="2"): input(type="submit" id="enter" value="Enter" onclick="validation()")
+                    td(colspan="2" id="enter"): input(type="submit" value="Enter" onclick="validation()")
         nav Mafia17
         .content
             div: ul(id="history")
