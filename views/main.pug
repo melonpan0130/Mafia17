@@ -26,6 +26,11 @@ html
             var mafia = 1;
             var citizen = 2;
 
+            $("#popup>table input").keyup(() => {
+                if(window.event.keyCode == 13) {
+                    validation();
+                }
+            })
             function validation() {
                 var name = document.getElementById('name');
                 var room = document.getElementById('room');
@@ -211,8 +216,7 @@ html
                 #msg: ul(id="messages")
                 #chatting
                     form(action="" class="normal")
-                        input(type="text" id="m" autocomplete="off")
-                        button send
+                        input(type="text" id="m" autocomplete="off" placeholder="메시지를 작성해 주세요")
             #guess
                 .gameGuess
                     //- for(var a=0; a<6; a++)
@@ -221,7 +225,7 @@ html
                             p Mafia
                             p userName
                 div
-                    div
+                    #buttons
                         button(onclick="gameStart()") Start
                         button(onclick="exit()") Exit
                     .hidden
