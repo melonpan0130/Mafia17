@@ -45,17 +45,18 @@ html
             function enter(){
                 name = document.getElementById('name').value;
                 Roomcode = document.getElementById('room').value;
-
-                // $("#popup").addClass("hidden");
+                
                 $("#popup").css('display', 'none');
-                alert('hidden');
 
 
                 socket.emit('joinRoom', Roomcode, name);
 
                 $('.normal').submit( () => {
-                    socket.emit('chat message', Roomcode, name, $('#m').val());
-                    $('#m').val('');
+                    if($('#m').val() != '') {
+                        socket.emit('chat message', Roomcode, name, $('#m').val());
+                        $('#m').val('');
+                    }
+                    else ;
                     return false;
                 });
 
@@ -63,6 +64,8 @@ html
                     if(this.name == name)
                         $('#messages').append($('<li>').text(msg).addClass('me'));
                     else $('#messages').append($('<li>').text(name + '  :  ' +msg));
+
+                    $("#messages").scrollTop($("#messages")[0].scrollHeight);
                 });
 
                 socket.on('joined', (Roomcode, name, players) => {
@@ -199,7 +202,7 @@ html
                     td: label(for="room") Room
                     td: input(type="text" name="room" placeholder="Room Code" value="dd" id="room")
                 tr
-                    td(colspan="2" id="enter"): input(type="submit" value="Enter" onclick="validation()")
+                    td(colspan="2" id="enter"): a(onclick="validation()") Enter
         nav Mafia17
         .content
             div: ul(id="history")
