@@ -90,14 +90,14 @@ nav {
     overflow: auto;
 }
 
-#buttons {
+.buttons {
     display: flex;
     flex-direction: column;
     justify-content: space-around;
     height: 100%;
 }
 
-#buttons button {
+.buttons button {
     margin: 20px;
     padding: 10px;
     box-sizing: content-box;
@@ -110,25 +110,25 @@ nav {
     transition: text-shadow 0.25s, box-shadow 0.25s, color 0.25s, background-color 0.25s;
 }
 
-#buttons button:hover {
+.buttons button:hover {
     text-shadow: 5px 5px #0C143F;
     box-shadow: 5px 5px #0C143F;
 }
 
-#buttons button:first-child {
+.buttons button:first-child {
     background-color: #1338A5;
 }
 
-#buttons button:first-child:hover {
+.buttons button:first-child:hover {
     color: #B34327;
     background-color: #021859;
 }
 
-#buttons button:last-child {
+.buttons button:last-child {
     background-color: #BF1635;
 }
 
-#buttons button:last-child:hover {
+.buttons button:last-child:hover {
     color: #CAC22C;
     background-color: #085473;
 }

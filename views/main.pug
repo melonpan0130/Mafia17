@@ -14,7 +14,7 @@ html
             var socket = io();
             var name, Roomcode;
             var startTime;
-            var jobs = ['mafia', 'doctor', 'police', 'citizen', 'ghost', 'politician', 'spy'];
+            var jobs = ['마피아', '의사', '경찰', '시민', '영매', '정치인', '스파이'];
             var statusMsg = ['밤이 되었습니다.', '아침이 밝았습니다.', '투표 시간입니다.', '최후의 반론'];
             var statusTime = [30, 120, 20, 10];
             // var statusTime = [5, 5, 5, 5];
@@ -88,16 +88,15 @@ html
 
                     playerNames = players;
                     
-                    for(var i=0; i<players.length; i++)
-                        alert(playerNames[i].name);
-
-                    $('#guess>div:last-child>div').addClass('gameGuess').toggleClass('hidden');
+                    $('#guess>div:last-child>div').removeClass('buttons').addClass('gameGuess').toggleClass('hidden');
                     $('#messages').empty();
                     $('#messages').append($('<li>').text(statusMsg[status]).addClass('notice'));
                     MixedJobs();
-                    $('#messages').append($('<li>').text('당신의 직업은 ' ).addClass('notice'));
+                    $('#messages').append($('<li>').text('당신의 직업은 '+jobs[Math.random()%players.length]+'입니다.').addClass('notice'));
+                    console.log(jobs);
                     timer();
-                    alert('Game start!');
+                    // alert('Game start!');
+                    alert(players.length);
                 });
 
                 function timer() {
@@ -160,7 +159,7 @@ html
             };
 
             function gameStart() {
-                if($('.gameGuess>div').length < 2)
+                if(false) // $('.gameGuess>div').length < 2)
                     alert('4명 이상이어야 합니다.');
                 else {
                     socket.emit('starting', Roomcode);
@@ -169,6 +168,8 @@ html
 
             function MixedJobs() {
                 var people;// = $('#guess>.gameGuess:first-child>div').length;
+                console.log("mix");
+                console.log(people);
                 people = playerNames;
                 for(var i=0; i<people; i++){
                     playerJobs[i] = i;
@@ -179,6 +180,7 @@ html
                     playerJobs[0] = playerJobs[Math.random()%people];
                     playerJobs[Math.random()%people] = temp;
                 }
+                console.log(playerJobs);
             }
 
             function exit() {
@@ -225,7 +227,7 @@ html
                             p Mafia
                             p userName
                 div
-                    #buttons
+                    .buttons
                         button(onclick="gameStart()") Start
                         button(onclick="exit()") Exit
                     .hidden
