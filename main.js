@@ -23,7 +23,6 @@ app.set('views', './views');
 
 var rooms = [];
 
-
 app.get('/', (req, res) => {
   /*
   db.query('SELECT * from test', function(err, rows, fields) {
