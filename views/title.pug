@@ -1,0 +1,29 @@
+html
+    head
+        script(src="/socket.io/socket.io.js")
+        script(src="https://code.jquery.com/jquery-3.4.1.js" integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
+  crossorigin="anonymous")
+        script(src="https://cdnjs.cloudflare.com/ajax/libs/gsap/2.1.3/TweenMax.min.js")
+        link(rel="stylesheet", href="https://fonts.googleapis.com/css?family=Racing+Sans+One|Song+Myung&display=swap&subset=korean,latin-ext")
+        //- script
+            include ../js/gameChat.js
+        style
+            include ../css/gameChat.css
+            include ../css/popup.css
+        script
+            include ../js/basic.js
+            include ../js/gamePlay.js
+        script.
+    body
+        #popup
+            table
+                tr
+                    td: h1(class="title") Mafia
+                tr
+                    td: label(for="name") Name
+                    td: input(type="text" name="name" placeholder="Name" value="dd" id="name")
+                tr
+                    td: label(for="room") Room
+                    td: input(type="text" name="room" placeholder="Room Code" value="dd" id="room")
+                tr
+                    td(colspan="2" id="enter"): a(onclick="validation()") Enter
